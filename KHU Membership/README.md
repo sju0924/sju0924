@@ -8,5 +8,5 @@
 
 ## 오픈소스(7/19 ~ 7/23)
 
-### 노션X 블로그 프로젝트
-github.com/KHU-Gamestry
+### Gamestry - 노션X 블로그 프로젝트
+https://github.com/KHU-Gamestry/nextjs-notion-starter-kit
