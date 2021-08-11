@@ -1,47 +1,30 @@
 ﻿#include <iostream>
 #include<vector>
 #include<algorithm>
+#include<queue>
 using namespace std;
-vector<vector<pair<int, int>>> g;
+int d[1001];
+int P[1001][1001];
+bool searched[1001];
 int n, m, s, t, T;
 int cur;
-bool compair(pair<int, int>a, pair<int, int> b) {
-	if (a.second > b.second) return true;
-	else return false;
-}
-int Min(int a, int b) {
-	if (a <= b) return a;
-	else return b;
-}
-int Max(int a, int b) {
-	if (a >= b)return a;
-	else return b;
-}
-int searchPath(int node,vector<int> pth,int smallest_width) {
-	if (node == t) {
-		cur = smallest_width;
-		return smallest_width;
-	}
-	//cout << "node: " << node <<"width: "<<smallest_width<< "cur "<<cur<<"\n";
-
-	int temp=-1;
-	int wid = smallest_width;
-	for (auto item : g[node]) {
-		if (find(pth.begin(), pth.end(), item.first) != pth.end()) {
-			continue;
+vector<vector<int>>g;
+void cleard() {
+	for (int i = 0; i <= 1000;i++) {
+		d[i] = -1;
+		searched[i] = 0;
+		for (int j = 0; j <= 1000;j++) {
+			P[i][j] = 0;
 		}
-		if (cur > item.second) {
-			continue;
-		}
-		wid = Min(smallest_width,item.second);
-		pth.push_back(item.first);
-		temp = Max(temp,searchPath(item.first,pth,wid));	
-		pth.pop_back();
 	}
-
-	return temp;
 }
-
+void printd() {
+	cout << "=====현재 거리=====\n";
+	for (int i = 1; i <= n; i++) {
+		cout << d[i] << " ";
+	}
+	cout << "\n";
+}
 int main()
 {
 	ios::sync_with_stdio(false);
@@ -54,19 +37,70 @@ int main()
 	
 	for (int i = 0; i < T; i++) {
 		cin >> n >> m >> s >> t;
-		g = vector<vector<pair<int,int>>>(n + 1);
+		d[s] = 0;
+		g = vector<vector<int>>(n + 1);
+		//cout << "g size: " << g.size() << "\n";
+		//cout << "g size: " << g[1].size() << "\n";
 		for (int j = 0; j < m; j++) {
 			cin >> start >> end >> width;
-			g[start].push_back(make_pair(end,width));
-			g[end].push_back(make_pair(start, width));
+			
+			g[start].push_back(end);
+			g[end].push_back(start);
+			P[start][end] = width;
+			P[end][start] = width;
+			if (start == s) {
+				d[end] = width;
+			}
+			else if (end == s) {
+				d[start] = width;
+			}
+		}
+		int curNode = s, nextNode = 0;
+		
+		for (int src = 0; src < n; src++) {
+			searched[curNode] = 1;
+				
+			for (int n = 0; n < g[curNode].size();n++) { //next node 구하기
+				//cout << "curnode: " << curNode << ", n: " << n << ", near Node:";
+				//cout<< g[curNode][n] << " , size: " << P[curNode][g[curNode][n]] << "\n";
+		
+				if (g[curNode][n] == s) continue;
+				if (d[curNode] < P[curNode][g[curNode][n]]) {
+					if (d[g[curNode][n]] < d[curNode]) {
+						d[g[curNode][n]] = d[curNode];
+					}
+				}
+				else if (d[curNode] >= P[curNode][g[curNode][n]]) {
+					if(d[g[curNode][n]] < P[curNode][g[curNode][n]]) {
+						d[g[curNode][n]] = P[curNode][g[curNode][n]];
+					}
+				}
+					
+				//printd();
+			}//cout << "ddd\n";
+			
+			nextNode = 1;
+			while (searched[nextNode]) {
+				nextNode++;
+			}
+
+			for (int next = nextNode; next <= n; next++) {
+				if (searched[next] || d[nextNode] > d[next]) continue;
+				nextNode = next;
+			}
+			//cout << "curNode: " << curNode;
+			curNode = nextNode;
+			//cout<<", nextNode : " << nextNode << "\n";
+				
+		}
+
+		cout << d[t] << "\n";
+		g.clear();
+		cleard();
 		}
 		
-		cur = 0;
-		cout<<searchPath(s, blank, 2100000000)<<"\n";
-
-		g.clear();
-		blank.clear();
-	}
-
-
+		
 }
+
+
+
