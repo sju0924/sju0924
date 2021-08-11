@@ -1,3 +1,11 @@
 *.pt
 *.csv
 *.PNG
+*.sin
+*.db
+*.opendb
+*.ipch
+*.db-shm
+*.db-wal
+*.vcxproj
+*.tlog
