@@ -9,3 +9,8 @@
 *.db-wal
 *.vcxproj
 *.tlog
+*.exe
+*.lnk
+*.filters
+*.sln
+*.pdb
